@@ -63,7 +63,24 @@ function sales() {
 
 };
 
-function purchase(ID, numNeeded) {
+function purchase(ID, amountNeeded) {
 
-    
-}
+    connection.query(`SELECT * FROM products WHERE id = ${ID}`, function (err, res) {
+        if (err) throw err;
+
+        if (amountNeeded <= res[0].stock_quantity) {
+            var cost = res[0].price * amountNeeded;
+            console.log("We have enough in stock!")
+            console.log(`Your total for ${amountNeeded} ${res[0].product_name} is ${cost}`);
+
+            connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${amountNeeded} WHERE id = ${ID}`);
+        } else {
+            console.log("I am sorry! Not enough of this item in stock!");
+        };
+    });
+
+    viewProducts();
+
+};
+
+viewProducts();
