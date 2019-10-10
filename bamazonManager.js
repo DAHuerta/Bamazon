@@ -36,7 +36,30 @@ connection.query(`SELECT * FROM products`, function(err, res){
         );
     };
     console.log(showInventory.toString());
-    updates()
+    updateOptions()
 });
 };
 
+function updateOptions() {
+
+    inquirer.prompt([
+        {
+            name: "options",
+            type: "list",
+            message: "Please, choose an inventory option"
+            choices: ["Replinish Inventory", "Add Product", "Remove Product"]
+        }]).then(function(answers) {
+        
+            switch(answers.options) {
+                case "Replinish Inventory":
+                    replinish();
+                    break;
+                case "Add Product":
+                    add();
+                    break;
+                case "Remove Product":
+                    remove();
+                    break;
+            }
+        });
+};
