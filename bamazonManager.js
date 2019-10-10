@@ -101,3 +101,50 @@ function replinishInventory(ID, amountAdded) {
 
 };
 
+function add() {
+
+    inquirer.prompt([
+        {
+            name: "ID",
+            type: "input",
+            message: "Add product ID number"
+        },
+        {
+            name: "name",
+            type: "input",
+            message: "What is the name of the product?"
+        },
+        {
+            name: "department",
+            type: "input",
+            message: "What department is your product in?"
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "How much does this product cost?"
+        },
+        {
+            name: "Stock",
+            type: "input",
+            message: "How much of this product do we have in stock?"
+        },
+    ]).then(function(answers) {
+        var newId = answers.ID;
+        var prodName = answers.name;
+        var depart = answers.department;
+        var prodPrice = answers.price;
+        var quantity = answers.stock;
+        newProduct(newId, prodName, depart, prodPrice, quantity);
+    });
+
+};
+
+function newProduct(prodName, depart, prodPrice, stock) {
+
+    connection.query(`INSERT INTO products (id, product_name, department_name, price, stock_quantity) VALUES(${ID},${prodName}, ${depart}, ${prodPrice}, ${stock})`);
+
+    inventory();
+
+};
+
