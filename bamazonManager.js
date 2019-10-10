@@ -46,7 +46,7 @@ function updateOptions() {
     inquirer.prompt([
         {
             name: "options",
-            type: "list",
+            type: "rawlist",
             message: "Please, choose an inventory option",
             choices: ["Replinish Inventory", "Add Product", "Remove Product"]
         }
@@ -62,6 +62,8 @@ function updateOptions() {
                 case "Remove Product":
                     remove();
                     break;
+                default:
+                    throw new err;
             }
         });
 
@@ -73,13 +75,13 @@ function replinish() {
         {
             name: "ID",
             type: "input",
-            message: "Enter the ID number of the item you want to purchase",
+            message: "Enter the ID number of the item you want to replinish",
             filter: Number,
         },
         {
             name: "Amount",
             type: "input",
-            message: " Enter amount of item that you would like to purchase",
+            message: "Enter amount of items that you would like to replinish",
             filter: Number,
         }
     ]).then(function(answers) {
@@ -92,10 +94,11 @@ function replinish() {
 
 function replinishInventory(ID, amountAdded) {
 
-    connection.query(`WHERE * FROM products WHERE id = ${ID}`, function (err,res) {
+    connection.query(`SELECT * FROM products WHERE id = ${ID}`, function (err) {
         if (err) throw err;
-        connection.query(`UPDATE products SET stock_quantity = stock_quantity ${amountAdded} WHERE id = ${ID}`);
-
+        connection.query(`UPDATE products SET stock_quantity = stock_quantity + ${amountAdded} WHERE id = ${ID}`, function(err){
+            if (err) throw err;
+        });
         inventory()
     });
 
@@ -104,11 +107,6 @@ function replinishInventory(ID, amountAdded) {
 function add() {
 
     inquirer.prompt([
-        {
-            name: "ID",
-            type: "input",
-            message: "Add product ID number"
-        },
         {
             name: "name",
             type: "input",
@@ -125,26 +123,26 @@ function add() {
             message: "How much does this product cost?"
         },
         {
-            name: "Stock",
+            name: "stock",
             type: "input",
             message: "How much of this product do we have in stock?"
         },
     ]).then(function(answers) {
-        var newId = answers.ID;
         var prodName = answers.name;
         var depart = answers.department;
         var prodPrice = answers.price;
         var quantity = answers.stock;
-        newProduct(newId, prodName, depart, prodPrice, quantity);
+        newProduct(prodName, depart, prodPrice, quantity);
     });
 
 };
 
-function newProduct(prodName, depart, prodPrice, stock) {
-
-    connection.query(`INSERT INTO products (id, product_name, department_name, price, stock_quantity) VALUES(${ID},${prodName}, ${depart}, ${prodPrice}, ${stock})`);
-
-    inventory();
+function newProduct(prodName, depart, prodPrice, quantity) {
+        
+        connection.query(`INSERT INTO products VALUES (${null}, ${prodName}, ${depart}, ${prodPrice}, ${quantity})`), function(err){
+            if (err) throw err; 
+        };    
+        inventory();
 
 };
 
@@ -154,20 +152,22 @@ function remove() {
         {
             name: "ID",
             type: "input",
-            message: "What is the amount you would like to remove?"
+            message: "What is the product ID you would like to remove?"
         }
     ]).then(function(answers) {
-        var newId = answers.ID;
-        removeProduct(ID);
+        var productId = answers.ID;
+        removeProduct(productId);
     });
 
 };
 
 function removeProduct(ID) {
 
-    connection.query(`DELETE FROM products WHERE id = ${ID}`, function(err, res) {
+    connection.query(`DELETE FROM products WHERE id = ${ID}`, function(err) {
         if (err) throw err;
+
         inventory()
+        console.log(`Item ${ID} was deleted`)
     });
 
 };

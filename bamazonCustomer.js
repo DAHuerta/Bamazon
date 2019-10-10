@@ -52,7 +52,7 @@ function sales() {
         {
             name: "Amount",
             type: "input",
-            message: " Enter amount of item that you would like to purchase",
+            message: "Enter amount of item that you would like to purchase",
             filter: Number
         }
     ]).then(function(answers) {
