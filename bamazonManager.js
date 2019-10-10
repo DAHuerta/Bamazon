@@ -38,6 +38,7 @@ connection.query(`SELECT * FROM products`, function(err, res){
     console.log(showInventory.toString());
     updateOptions()
 });
+
 };
 
 function updateOptions() {
@@ -46,9 +47,10 @@ function updateOptions() {
         {
             name: "options",
             type: "list",
-            message: "Please, choose an inventory option"
+            message: "Please, choose an inventory option",
             choices: ["Replinish Inventory", "Add Product", "Remove Product"]
-        }]).then(function(answers) {
+        }
+    ]).then(function(answers) {
         
             switch(answers.options) {
                 case "Replinish Inventory":
@@ -62,4 +64,40 @@ function updateOptions() {
                     break;
             }
         });
+
 };
+
+function replinish() {
+
+    inquirer.prompt([
+        {
+            name: "ID",
+            type: "input",
+            message: "Enter the ID number of the item you want to purchase",
+            filter: Number,
+        },
+        {
+            name: "Amount",
+            type: "input",
+            message: " Enter amount of item that you would like to purchase",
+            filter: Number,
+        }
+    ]).then(function(answers) {
+        var amountAdded = answers.Amount;
+        var idNeeded = answers.ID
+        replinishInventory(idNeeded, amountAdded);
+    });
+
+};
+
+function replinishInventory(ID, amountAdded) {
+
+    connection.query(`WHERE * FROM products WHERE id = ${ID}` function(err,res) {
+        if (err) throw err;
+        connection.query(`UPDATE products SET stock_quantity = stock_quantity ${amountAdded} WHERE id = ${ID}`);
+
+        inventory()
+    });
+
+};
+
