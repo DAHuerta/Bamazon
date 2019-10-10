@@ -92,7 +92,7 @@ function replinish() {
 
 function replinishInventory(ID, amountAdded) {
 
-    connection.query(`WHERE * FROM products WHERE id = ${ID}` function(err,res) {
+    connection.query(`WHERE * FROM products WHERE id = ${ID}`, function (err,res) {
         if (err) throw err;
         connection.query(`UPDATE products SET stock_quantity = stock_quantity ${amountAdded} WHERE id = ${ID}`);
 
@@ -148,3 +148,28 @@ function newProduct(prodName, depart, prodPrice, stock) {
 
 };
 
+function remove() {
+
+    inquirer.prompt([
+        {
+            name: "ID",
+            type: "input",
+            message: "What is the amount you would like to remove?"
+        }
+    ]).then(function(answers) {
+        var newId = answers.ID;
+        removeProduct(ID);
+    });
+
+};
+
+function removeProduct(ID) {
+
+    connection.query(`DELETE FROM products WHERE id = ${ID}`, function(err, res) {
+        if (err) throw err;
+        inventory()
+    });
+
+};
+
+inventory();

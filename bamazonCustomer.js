@@ -73,13 +73,14 @@ function purchase(ID, amountNeeded) {
             console.log("We have enough in stock!")
             console.log(`Your total for ${amountNeeded} ${res[0].product_name} is ${cost}`);
 
-            connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${amountNeeded} WHERE id = ${ID}`);
+            connection.query(`UPDATE products SET stock_quantity = stock_quantity - ${amountNeeded} WHERE id = ${ID}`, function(err, res) {
+                if (err) throw err;
+                viewProducts();
+            });
         } else {
             console.log("I am sorry! Not enough of this item in stock!");
         };
     });
-
-    viewProducts();
 
 };
 
