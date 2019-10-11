@@ -139,7 +139,7 @@ function add() {
 
 function newProduct(prodName, depart, prodPrice, quantity) {
         
-        connection.query(`INSERT INTO products VALUES (${null}, ${prodName}, ${depart}, ${prodPrice}, ${quantity})`), function(err){
+        connection.query(`INSERT INTO products VALUES (${null}, '${prodName}', '${depart}', ${prodPrice}, ${quantity})`), function(err){
             if (err) throw err; 
         };    
         inventory();
